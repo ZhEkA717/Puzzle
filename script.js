@@ -71,7 +71,6 @@ function addFieldInPage(size, fieldSize) {
 }
 
 addFieldInPage(4, 400);
-addFieldInPage(4,700);
 
 function findChildEmptyCeil(size) {
     const cells = document.querySelectorAll(".cell");
@@ -167,7 +166,7 @@ function funMovingCell(EO) {
                 elEvent.parentElement.replaceChild(clonedCell, elEvent);
                 cell.parentElement.replaceChild(clonedElEvent, cell);
             } catch {
-                console.log("replaceChild!")
+                console.log("No forget fix bag")
             }
 
             isClicked = true;
@@ -175,3 +174,85 @@ function funMovingCell(EO) {
 
     }
 }
+
+
+const menu = document.createElement("div");
+menu.classList.add("menu");
+menu.style.width = 650+"px";
+menu.style.display = "flex";
+menu.style.justifyContent = "space-between";
+menu.style.position = "absolute";
+menu.style.left = 50 +"%";
+menu.style.top = 60+"px";
+menu.style.transform = "translateX(-50%)";
+
+
+const shuffle = document.createElement("div");
+shuffle.classList.add("shuffle");
+shuffle.style.width = 200+"px";
+shuffle.style.height = 30+"px";
+shuffle.style.display = "flex";
+shuffle.style.justifyContent = "center";
+shuffle.style.alignItems = "center";
+shuffle.style.color = "white";
+shuffle.style.background = "rgb(99, 153, 99)";
+shuffle.style.borderRadius = "5px";
+shuffle.style.cursor = "pointer";
+
+const stop = document.createElement("div");
+stop.classList.add("stop");
+stop.style.width = 100+"px";
+stop.style.height = 30+"px";
+stop.style.display = "flex";
+stop.style.justifyContent = "center";
+stop.style.alignItems = "center";
+stop.style.color = "white";
+stop.style.background = "rgb(99, 153, 99)";
+stop.style.borderRadius = "5px";
+stop.style.cursor = "pointer";
+
+const save = document.createElement("div");
+save.classList.add("save");
+save.classList.add("stop");
+save.style.width = 100+"px";
+save.style.height = 30+"px";
+save.style.display = "flex";
+save.style.justifyContent = "center";
+save.style.alignItems = "center";
+save.style.color = "white";
+save.style.background = "rgb(99, 153, 99)";
+save.style.borderRadius = "5px";
+save.style.cursor = "pointer";
+
+const result = document.createElement("div");
+result.classList.add("result");
+result.classList.add("save");
+result.classList.add("stop");
+result.style.width = 100+"px";
+result.style.height = 30+"px";
+result.style.display = "flex";
+result.style.justifyContent = "center";
+result.style.alignItems = "center";
+result.style.color = "white";
+result.style.background = "rgb(99, 153, 99)";
+result.style.borderRadius = "5px";
+result.style.cursor = "pointer";
+
+menu.append(shuffle);
+menu.append(stop);
+menu.append(save);
+menu.append(result);
+
+document.body.append(menu);
+
+shuffle.innerHTML = "shuffle and restart";
+stop.innerHTML = "stop";
+save.innerHTML = "save";
+result.innerHTML = "results";
+
+shuffle.addEventListener("click",()=>{
+    const cells = document.querySelectorAll(".cell");
+    const size = Math.pow(cells.length,0.5);
+    const cellWidth = cells[0].offsetWidth;
+    addFieldInPage(size, cellWidth*size);
+})
