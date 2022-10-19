@@ -1,6 +1,10 @@
+const wrapper = document.createElement("div");
+wrapper.classList.add(".wrapper");
+document.body.prepend(wrapper);
+
 function createRandomArray(size) {
+    // let arr = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,0,15];
     let arr = [];
-   
     while (arr.length < size * size) {
         let r = Math.floor(Math.random() * size * size);
         if (arr.indexOf(r) === -1) {
@@ -31,15 +35,19 @@ function createField(size, fieldSize) {
             count++;
         }
     }
+    const fieldBlock = document.createElement("div");
+    fieldBlock.classList.add("field-block");
+    field.append(fieldBlock);
     return field;
 }
 
 function addFieldInPage(size, fieldSize) {
     let field = document.querySelector(".field")
     if (field) {
-        document.body.replaceChild(createField(size, fieldSize), field)
+        wrapper.innerHTML="";
+        wrapper.append(createField(size,fieldSize));
     } else {
-        document.body.prepend(createField(size, fieldSize));
+        wrapper.append(createField(size, fieldSize));
     }
 
     const cells = document.querySelectorAll(".cell");
@@ -111,10 +119,7 @@ function findChildEmptyCeil(size) {
     };
 }
 
-
-// let field = document.querySelector(".field");
-let field = document.body;
-field.addEventListener("click", funMovingCell);
+wrapper.addEventListener("click", funMovingCell);
 
 function funMovingCell(EO) {
     const cells = document.querySelectorAll(".cell");
@@ -146,24 +151,24 @@ function funMovingCell(EO) {
         cell.style.top = elTop + "px";
         cell.style.left = elLeft + "px";
 
-        elEvent.addEventListener("transitionend", (e) => {
+        elEvent.addEventListener("transitionend", funTransitionEnd);
+        function funTransitionEnd(e){
+            
+            let clonedCell = cell.cloneNode(true);
+            let clonedElEvent = elEvent.cloneNode(true);
 
-            try {
-                let clonedCell = cell.cloneNode(true);
-                let clonedElEvent = elEvent.cloneNode(true);
-
-                elEvent.parentElement.replaceChild(clonedCell, elEvent);
-                cell.parentElement.replaceChild(clonedElEvent, cell);
-            } catch {
-                console.log("No forget fix bag")
-            }
-
+            elEvent.parentElement.replaceChild(clonedCell, elEvent);
+            cell.parentElement.replaceChild(clonedElEvent, cell);
+               
             if(gameOver()){
-                alert("Game Over");
+                gameOverPopap();
+                saveIsEnabled();
+            }else{
+                saveIsDisabled();
             }
             isClicked = true;
-        })
-
+            elEvent.removeEventListener("transitionend",funTransitionEnd);
+        };
     }
 }
 
@@ -230,6 +235,7 @@ shuffle.addEventListener("click", () => {
     const movesCount = document.querySelector(".moves span");
     movesCount.innerHTML = 0;
     addFieldInPage(size, cellWidth);
+    saveIsDisabled();
 });
 
 sizes.forEach(item => {
@@ -260,6 +266,7 @@ sizes.forEach(item => {
                 }
             }
         }
+        saveIsDisabled();
     })
 });
 
@@ -300,3 +307,60 @@ function gameOver() {
   
     return winValues===cellsValues?true:false;
 }
+
+
+function gameOverPopap() {
+    const backgroundPopap = document.createElement("div");
+    const popap = document.createElement("div");
+    const closePopap = document.createElement("div");
+    backgroundPopap.classList.add("background-popap");
+    popap.classList.add("popap");
+    closePopap.classList.add("close-popap");
+
+    backgroundPopap.append(popap);
+    backgroundPopap.append(closePopap);
+    document.body.prepend(backgroundPopap);
+
+    const countMoves = document.querySelector(".moves span").innerHTML;
+    const currTime = document.querySelector(".time span").innerHTML;
+        
+    popap.innerHTML = `
+    Hooray!<br> 
+    You solved the puzzle 
+    in <span class="count-moves">${currTime}</span> and <span class="curr-time">${countMoves}</span> moves!
+    `;
+    closePopap.innerHTML = "&times;";
+}
+
+
+
+function saveIsEnabled() {
+    const save = document.querySelector(".save");
+    save.classList.add("save-active");
+
+    const backgroundPopap = document.querySelector(".background-popap");
+    backgroundPopap.addEventListener("click", funBackgroundPopapClose);
+    function funBackgroundPopapClose(e){
+        e.preventDefault();
+        e.currentTarget.remove();
+        backgroundPopap.removeEventListener("click", funBackgroundPopapClose);
+
+        const fieldBlock = document.querySelector(".field-block");
+        fieldBlock.style.display = "block";
+    };    
+}
+
+function saveIsDisabled(){
+    const save = document.querySelector(".save");
+    if(save.classList.contains("save-active")){
+        save.classList.remove("save-active");
+    }
+}
+
+save.addEventListener("click",(e)=>{
+    if(save.classList.contains("save-active")){
+        const fieldBlock = document.querySelector(".field-block");
+        fieldBlock.style.display = "none";
+        saveIsDisabled();
+    }
+});
