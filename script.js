@@ -1,5 +1,6 @@
 function createRandomArray(size) {
     let arr = [];
+   
     while (arr.length < size * size) {
         let r = Math.floor(Math.random() * size * size);
         if (arr.indexOf(r) === -1) {
@@ -17,26 +18,15 @@ function createField(size, fieldSize) {
     field.classList.add("field");
     field.style.width = fieldSize + "px";
     field.style.height = fieldSize + "px";
-    field.style.position = "absolute";
-    field.style.top = "50%";
-    field.style.left = "50%";
-    field.style.transform = "translate(-50%,-50%)";
-    field.style.background = "lightgrey";
     for (let i = 0; i < size; i++) {
         for (let j = 0; j < size; j++) {
             const cell = document.createElement("div");
             cell.classList.add("cell");
             cell.innerHTML = arr[count];
-            cell.style.position = "absolute";
             cell.style.top = (0 + i * fieldSize / size) + 'px';
             cell.style.left = (0 + j * fieldSize / size) + "px";
             cell.style.width = fieldSize / size + "px";
             cell.style.height = fieldSize / size + "px";
-            cell.style.textAlign = "center";
-            cell.style.display = "flex";
-            cell.style.alignItems = "center";
-            cell.style.justifyContent = "center";
-            cell.style.cursor = "pointer";
             field.append(cell);
             count++;
         }
@@ -60,17 +50,14 @@ function addFieldInPage(size, fieldSize) {
             item.innerHTML = "";
         }
 
-        if (item.classList.contains("empty-cell")) {
-            item.style.background = "transparent";
-        } else {
-            item.style.background = "pink";
-            item.style.border = "1px solid black";
+        if (!item.classList.contains("empty-cell")) {
+            item.style.outline = "1px solid black";
         }
     });
     return size;
 }
 
-addFieldInPage(4, 400);
+addFieldInPage(4, 700);
 
 function findChildEmptyCeil(size) {
     const cells = document.querySelectorAll(".cell");
@@ -131,6 +118,7 @@ field.addEventListener("click", funMovingCell);
 
 function funMovingCell(EO) {
     const cells = document.querySelectorAll(".cell");
+    const movesCount = document.querySelector(".moves span");
     let isClicked = true;
     let {
         prevChild,
@@ -145,10 +133,10 @@ function funMovingCell(EO) {
     let elEvent = EO.target,
         elTop = elEvent.offsetTop;
     elLeft = elEvent.offsetLeft;
-
+    let count = +movesCount.innerHTML;
     if (elEvent == prevChild || elEvent == nextChild ||
         elEvent == upChild || elEvent == downChild && isClicked) {
-
+        movesCount.innerHTML = ++count;
         isClicked = false;
 
         elEvent.style.top = cellTop + "px";
@@ -159,6 +147,7 @@ function funMovingCell(EO) {
         cell.style.left = elLeft + "px";
 
         elEvent.addEventListener("transitionend", (e) => {
+
             try {
                 let clonedCell = cell.cloneNode(true);
                 let clonedElEvent = elEvent.cloneNode(true);
@@ -169,6 +158,9 @@ function funMovingCell(EO) {
                 console.log("No forget fix bag")
             }
 
+            if(gameOver()){
+                alert("Game Over");
+            }
             isClicked = true;
         })
 
@@ -176,83 +168,135 @@ function funMovingCell(EO) {
 }
 
 
+
+
 const menu = document.createElement("div");
-menu.classList.add("menu");
-menu.style.width = 650+"px";
-menu.style.display = "flex";
-menu.style.justifyContent = "space-between";
-menu.style.position = "absolute";
-menu.style.left = 50 +"%";
-menu.style.top = 60+"px";
-menu.style.transform = "translateX(-50%)";
-
-
 const shuffle = document.createElement("div");
+stop = document.createElement("div"),
+    save = document.createElement("div"),
+    result = document.createElement("div");
+
+menu.classList.add("menu");
 shuffle.classList.add("shuffle");
-shuffle.style.width = 200+"px";
-shuffle.style.height = 30+"px";
-shuffle.style.display = "flex";
-shuffle.style.justifyContent = "center";
-shuffle.style.alignItems = "center";
-shuffle.style.color = "white";
-shuffle.style.background = "rgb(99, 153, 99)";
-shuffle.style.borderRadius = "5px";
-shuffle.style.cursor = "pointer";
-
-const stop = document.createElement("div");
 stop.classList.add("stop");
-stop.style.width = 100+"px";
-stop.style.height = 30+"px";
-stop.style.display = "flex";
-stop.style.justifyContent = "center";
-stop.style.alignItems = "center";
-stop.style.color = "white";
-stop.style.background = "rgb(99, 153, 99)";
-stop.style.borderRadius = "5px";
-stop.style.cursor = "pointer";
-
-const save = document.createElement("div");
 save.classList.add("save");
-save.classList.add("stop");
-save.style.width = 100+"px";
-save.style.height = 30+"px";
-save.style.display = "flex";
-save.style.justifyContent = "center";
-save.style.alignItems = "center";
-save.style.color = "white";
-save.style.background = "rgb(99, 153, 99)";
-save.style.borderRadius = "5px";
-save.style.cursor = "pointer";
-
-const result = document.createElement("div");
 result.classList.add("result");
-result.classList.add("save");
-result.classList.add("stop");
-result.style.width = 100+"px";
-result.style.height = 30+"px";
-result.style.display = "flex";
-result.style.justifyContent = "center";
-result.style.alignItems = "center";
-result.style.color = "white";
-result.style.background = "rgb(99, 153, 99)";
-result.style.borderRadius = "5px";
-result.style.cursor = "pointer";
 
-menu.append(shuffle);
-menu.append(stop);
-menu.append(save);
-menu.append(result);
+menu.prepend(result);
+menu.prepend(save);
+menu.prepend(stop);
+menu.prepend(shuffle);
 
-document.body.append(menu);
+document.body.prepend(menu);
 
-shuffle.innerHTML = "shuffle and restart";
-stop.innerHTML = "stop";
-save.innerHTML = "save";
-result.innerHTML = "results";
+shuffle.innerHTML = "Shuffle and restart";
+stop.innerHTML = "Stop";
+save.innerHTML = "Save";
+result.innerHTML = "Results";
 
-shuffle.addEventListener("click",()=>{
+const movesAndTime = document.createElement("div");
+const moves = document.createElement("div"),
+    time = document.createElement("div");
+
+
+movesAndTime.classList.add("movesAndTime");
+moves.classList.add("moves");
+time.classList.add("time");
+
+movesAndTime.prepend(time);
+movesAndTime.prepend(moves);
+
+document.body.prepend(movesAndTime);
+
+moves.innerHTML = "Moves:<span>0</span>";
+time.innerHTML = "Time:<span>00:00</span>";
+
+const otherSize = document.createElement("div");
+otherSize.classList.add("other-size");
+
+document.body.prepend(otherSize);
+
+otherSize.innerHTML = `Other size:  <span>3&times;3</span>  <span class="other-size_active">4&times;4</span>  <span>5&times;5</span>  <span>6&times;6</span>  <span>7&times;7</span>  <span>8&times;8</span>`;
+
+const sizes = document.querySelectorAll(".other-size span");
+
+
+
+shuffle.addEventListener("click", () => {
+    const field = document.querySelector(".field");
     const cells = document.querySelectorAll(".cell");
-    const size = Math.pow(cells.length,0.5);
-    const cellWidth = cells[0].offsetWidth;
-    addFieldInPage(size, cellWidth*size);
-})
+    const size = Math.pow(cells.length, 0.5);
+    let cellWidth = field.offsetWidth;
+    const movesCount = document.querySelector(".moves span");
+    movesCount.innerHTML = 0;
+    addFieldInPage(size, cellWidth);
+});
+
+sizes.forEach(item => {
+    item.addEventListener("click", (e) => {
+        e.preventDefault();
+        const field = document.querySelector(".field");
+        const movesCount = document.querySelector(".moves span");
+        if (!item.classList.contains(".other-size_active")) {
+            let answer = confirm("Are you sure to resize and restart?");
+            if (answer) {
+                let activeEl = document.querySelector(".other-size_active");
+                activeEl.classList.remove("other-size_active");
+                item.classList.add("other-size_active");
+
+                movesCount.innerHTML = 0;
+                if (item.innerHTML[0] === "3") {
+                    addFieldInPage(3, field.offsetWidth);
+                } else if (item.innerHTML[0] === "4") {
+                    addFieldInPage(4, field.offsetWidth);
+                } else if (item.innerHTML[0] === "5") {
+                    addFieldInPage(5, field.offsetWidth);
+                } else if (item.innerHTML[0] === "6") {
+                    addFieldInPage(6, field.offsetWidth);
+                } else if (item.innerHTML[0] === "7") {
+                    addFieldInPage(7, field.offsetWidth);
+                } else if (item.innerHTML[0] === "8") {
+                    addFieldInPage(8, field.offsetWidth);
+                }
+            }
+        }
+    })
+});
+
+function gameOver() {
+    const cells = document.querySelectorAll(".cell");
+
+    let winValues = ""
+
+    switch (cells.length) {
+        case 9:
+            winValues = "123456780";
+            break;
+        case 16:
+            winValues = "1234567891011121314150";
+            break;
+        case 25:
+            winValues = "1234567891011121314151617181920212223240";
+            break;
+        case 36:
+            winValues = "12345678910111213141516171819202122232425262728293031323334350";
+            break;
+        case 49:
+            winValues = "1234567891011121314151617181920212223242526272829303132333435363738394041424344454647480";
+            break;
+        case 64:
+            winValues = "1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162630";
+            break;
+    }
+    let cellsValues = "";
+
+    cells.forEach(item => {
+        if (item.innerHTML === "") {
+            cellsValues += "0";
+        } else {
+            cellsValues += `${item.innerHTML}`;
+        }
+    })
+  
+    return winValues===cellsValues?true:false;
+}

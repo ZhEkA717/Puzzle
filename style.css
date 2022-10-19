@@ -1,0 +1,132 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    background: lightgray;
+    position: relative;
+}
+
+.field {
+    position: absolute;
+    top: 130px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.cell {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 25px;
+    background: pink;
+    border-radius: 20%;
+}
+
+.empty-cell {
+    background: transparent;
+}
+
+.menu {
+    width: 700px;
+    display: flex;
+    justify-content: space-between;
+    position: absolute;
+    left: 50%;
+    top: 30px;
+    transform: translateX(-50%);
+}
+
+.shuffle,
+.stop,
+.save,
+.result {
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.shuffle:hover,
+.stop:hover,
+.save:hover,
+.result:hover {
+    opacity: 0.8;
+}
+
+.shuffle {
+    width: 200px;
+    background: rgb(99, 153, 99);
+}
+
+.stop {
+    width: 100px;
+    background: grey
+}
+
+.save {
+    width: 100px;
+    background: rgb(99, 153, 99);
+}
+
+.result {
+    width: 100px;
+    background: rgb(99, 153, 99);
+}
+
+.movesAndTime {
+    width: 350px;
+    display: flex;
+    justify-content: space-between;
+    position: absolute;
+    left: 50%;
+    top: 80px;
+    transform: translateX(-50%);
+}
+
+.moves,
+.time {
+    width: 150px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: black;
+    font-size: 30px;
+}
+
+.other-size {
+    width: 500px;
+    display: flex;
+    justify-content: space-between;
+    position: absolute;
+    left: 50%;
+    top: 850px;
+    transform: translateX(-50%);
+    font-size: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.other-size span {
+    color: rgb(99, 153, 99);
+    border-bottom: 1.5px solid rgb(99, 153, 99);
+    transition-duration: 0.5s;
+    cursor: pointer;
+    font-size: 20px;
+    height: 22px;
+}
+
+.other-size span:hover,
+.other-size span.other-size_active {
+    color: black;
+    border-bottom: 1.5px solid black;
+}
